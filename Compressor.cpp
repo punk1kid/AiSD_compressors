@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <fstream>
 #include <vector>
 #include <algorithm>
@@ -95,7 +95,7 @@ void main() {
 
 
     int choose2;
-    std::cout << "\n\n1 - rle \n2 - bwt \n3 - mtf \n4 - lz77 \n5 - ha \n\nselect >";
+    std::cout << "\n\n1 - rle \n2 - bwt \n3 - mtf \n4 - lz77 \n5 - ha \n6 - bwt+rle\n\nselect >";
     
     std::cin >> choose2;
 
@@ -165,7 +165,7 @@ void main() {
     case 5:
         //ha
     {
-        input_file = "encoded_lz77.bin";
+        
         std::string encoded_file = "encoded_ha.bin";
         std::ifstream input(input_file);
         std::string text((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
@@ -188,8 +188,42 @@ void main() {
         //Энтропия
         double entropy = huffman.calculateEntropy(text);
         std::cout << "Entropy: " << entropy << "bits/character" << std::endl;
+    } 
+    break;
+
+    case 6:
+        //bwt+rle
+    {   
+        
+        std::string encoded_file = "encoded_bwt.bin";
+        std::string text = read_file(input_file);
+        std::string transformed_text = bwt_encode(text);
+        write_file(encoded_file, transformed_text);
+
+        input_file = encoded_file;
+        encoded_file = "encoded_rle.bin";
+        decoded_file = "decoded_rle.txt";
+        rle_encode(input_file, encoded_file);
+        rle_decode(encoded_file, decoded_file);
+        
+        encoded_file = decoded_file;
+        decoded_file = "decoded.txt";
+
+        // Чтение закодированного текста из файла
+        std::string read_transformed_text = read_file(encoded_file);
+
+        // Декодирование текста и запись в файл
+        std::string original_text = bwt_decode(read_transformed_text);
+        write_file(decoded_file, original_text);
+
+
     }
     break;
+
+    case 7:
+        
+    break;
+
     default:
         break;
     }
